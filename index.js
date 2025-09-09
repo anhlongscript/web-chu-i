@@ -13,5 +13,5 @@ app.get("/", (req, res) => {
 
 // Khởi động server
 app.listen(PORT, () => {
-  console.log(``✅ streaky đang chạy ở cổng ${PORT}`);
+  console.log(`✅ streaky đang chạy ở cổng ${PORT}`);
 });
