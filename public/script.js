@@ -1,36 +1,67 @@
-// Xử lý form đăng ký
+// script.js
+
 document.addEventListener("DOMContentLoaded", () => {
-  const registerForm = document.getElementById("register-form");
-  const messageBox = document.getElementById("message");
+  const loginBox = document.getElementById("loginBox");
+  const registerBox = document.getElementById("registerBox");
+  const appArea = document.getElementById("appArea");
 
-  registerForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+  const btnLogin = document.getElementById("btnLogin");
+  const btnRegister = document.getElementById("btnRegister");
+  const showRegister = document.getElementById("showRegister");
+  const showLogin = document.getElementById("showLogin");
+  const btnLogout = document.getElementById("btnLogout");
 
-    const avatar = document.getElementById("avatar").files[0];
-    const password = document.getElementById("password").value;
-    const gender = document.getElementById("gender").value;
+  // Hiện form đăng ký
+  showRegister.addEventListener("click", () => {
+    loginBox.style.display = "none";
+    registerBox.style.display = "block";
+  });
 
-    if (!avatar) {
-      messageBox.innerText = "⚠️ Vui lòng chọn avatar!";
-      messageBox.style.color = "red";
+  // Quay lại đăng nhập
+  showLogin.addEventListener("click", () => {
+    registerBox.style.display = "none";
+    loginBox.style.display = "block";
+  });
+
+  // Đăng ký
+  btnRegister.addEventListener("click", () => {
+    const name = document.getElementById("regName").value;
+    const pass = document.getElementById("regPass").value;
+    const gender = document.getElementById("regGender").value;
+
+    if (!name || !pass) {
+      document.getElementById("regMsg").innerText = "⚠️ Vui lòng nhập đủ thông tin";
       return;
     }
 
-    if (!password) {
-      messageBox.innerText = "⚠️ Vui lòng nhập mật khẩu!";
-      messageBox.style.color = "red";
-      return;
+    // Lưu tạm vào localStorage
+    localStorage.setItem("user", JSON.stringify({ name, pass, gender }));
+
+    alert("✅ Đăng ký thành công, hãy đăng nhập!");
+    registerBox.style.display = "none";
+    loginBox.style.display = "block";
+  });
+
+  // Đăng nhập
+  btnLogin.addEventListener("click", () => {
+    const name = document.getElementById("loginName").value;
+    const pass = document.getElementById("loginPass").value;
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (name === user.name && pass === user.pass) {
+      loginBox.style.display = "none";
+      appArea.style.display = "block";
+      document.getElementById("meName").innerText = user.name;
+      document.getElementById("meGender").innerText = user.gender === "male" ? "Nam" : "Nữ";
+    } else {
+      alert("❌ Sai tên đăng nhập hoặc mật khẩu");
     }
+  });
 
-    if (!gender) {
-      messageBox.innerText = "⚠️ Vui lòng chọn giới tính!";
-      messageBox.style.color = "red";
-      return;
-    }
-
-    messageBox.innerText = "✅ Đăng ký thành công!";
-    messageBox.style.color = "green";
-
-    // Sau này có thể lưu thông tin vào server hoặc localStorage
+  // Đăng xuất
+  btnLogout.addEventListener("click", () => {
+    appArea.style.display = "none";
+    loginBox.style.display = "block";
   });
 });
