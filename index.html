@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 Streaky</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #fff;
+      margin: 0;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 28px;
+    }
+    #fire {
+      font-size: 80px;
+      margin: 20px 0;
+      transition: color 0.3s ease;
+    }
+    #progress {
+      width: 300px;
+      height: 20px;
+      border: 2px solid #000;
+      margin: 20px auto;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #progress-fill {
+      height: 100%;
+      width: 0%;
+      background: orange;
+      transition: width 0.5s ease;
+    }
+    button {
+      background: gold;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 Streaky - Điểm danh mỗi ngày</h1>
+  <div id="fire">🔥</div>
+  <div id="progress">
+    <div id="progress-fill"></div>
+  </div>
+  <button id="checkin-btn">Điểm danh</button>
+  <div id="message"></div>
+
+  <script>
+    let streak = parseInt(localStorage.getItem("streak")) || 0;
+    let lastCheckin = parseInt(localStorage.getItem("lastCheckin")) || 0;
+
+    const btn = document.getElementById("checkin-btn");
+    const msg = document.getElementById("message");
+    const fire = document.getElementById("fire");
+    const fill = document.getElementById("progress-fill");
+
+    function updateUI() {
+      fill.style.width = (streak % 10) * 10 + "%";
+      if (streak % 10 === 0 && streak > 0) {
+        fire.style.color = "green";
+      } else {
+        fire.style.color = "orange";
+      }
+      msg.innerText = Bạn đã điểm danh được ${streak} ngày.;
+    }
+
+    function canCheckin() {
+      const now = Date.now();
+      return now - lastCheckin >= 24 * 60 * 60 * 1000 || streak === 0;
+    }
+
+    btn.addEventListener("click", () => {
+      if (!canCheckin()) {
+        msg.innerText = "⏳ Bạn phải chờ 24h mới được điểm danh tiếp.";
+        return;
+      }
+      streak++;
+      lastCheckin = Date.now();
+      localStorage.setItem("streak", streak);
+      localStorage.setItem("lastCheckin", lastCheckin);
+      msg.innerText =🎉 Bạn đã điểm danh ngày ${streak}!`;
+      updateUI();
+    });
+
+    if (!canCheckin()) {
+      btn.disabled = true;
+      msg.innerText = "⏳ Bạn phải chờ 24h mới được điểm danh tiếp.";
+    }
+    updateUI();
+  </script>
+</body>
+</html>
