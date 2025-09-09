@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Streaky — Đăng ký / Đăng nhập</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="title">Streaky</h1>
+
+    <div id="authCard" class="card">
+      <!-- LOGIN -->
+      <div id="loginBox">
+        <h2>Đăng nhập</h2>
+        <input id="loginName" placeholder="Tên đăng nhập" />
+        <input id="loginPass" type="password" placeholder="Mật khẩu" />
+        <div class="row">
+          <button id="btnLogin" class="btn primary">Đăng nhập</button>
+          <button id="showRegister" class="btn ghost">Đăng ký</button>
+        </div>
+        <p class="muted">Chưa có tài khoản? Nhấn "Đăng ký"</p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerBox" style="display:none">
+        <h2>Đăng ký</h2>
+        <input id="regName" placeholder="Tên hiển thị" />
+        <input id="regPass" type="password" placeholder="Mật khẩu" />
+        <label>Giới tính</label>
+        <select id="regGender">
+          <option value="male">Nam</option>
+          <option value="female">Nữ</option>
+        </select>
+        <label>Ảnh đại diện (tùy chọn)</label>
+        <input id="regAvatar" type="file" accept="image/*" />
+        <div id="avatarPreview" class="avatarPreview">🙂</div>
+        <div class="row">
+          <button id="btnRegister" class="btn primary">Đăng ký</button>
+          <button id="showLogin" class="btn ghost">Quay lại</button>
+        </div>
+        <div id="regMsg" class="muted"></div>
+      </div>
+    </div>
+
+    <!-- Sau khi login thành công -->
+    <div id="appArea" class="card" style="display:none">
+      <div class="meRow">
+        <div id="meAvatar" class="avatarBig">🙂</div>
+        <div>
+          <div id="meName" class="bigName">Tên</div>
+          <div id="meGender" class="muted small">Giới tính</div>
+        </div>
+        <div style="margin-left:auto">
+          <button id="btnLogout" class="btn ghost">Đăng xuất</button>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="muted">Bạn đã đăng nhập thành công ✅</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
