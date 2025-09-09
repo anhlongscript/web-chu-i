@@ -9,5 +9,5 @@ app.get("/", (req, res) => {
 
 // lắng nghe server
 app.listen(PORT, () => {
-  console.log(✅ streaky đang chạy ở cổng ${PORT}`);
+  console.log(`✅ streaky đang chạy ở cổng ${PORT}`);
 });
