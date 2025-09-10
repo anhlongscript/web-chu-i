@@ -8,48 +8,30 @@
 </head>
 <body>
   <div class="wrap">
-    <h1 class="title">🔥 Streaky</h1>
+    <h1>🔥 Streaky</h1>
 
-    <!-- Thanh menu -->
-    <nav class="menu">
-      <button data-tab="streak">Chuỗi</button>
-      <button data-tab="explore">Khám phá</button>
-      <button data-tab="leaderboard">Bảng xếp hạng</button>
-      <button data-tab="me">Tôi</button>
+    <nav class="card tabs">
+      <button>Chuỗi</button>
+      <button>Khám phá</button>
+      <button>Bảng xếp hạng</button>
+      <button id="btnProfile">Tôi</button>
     </nav>
 
-    <!-- Tab Chuỗi -->
-    <div id="tab-streak" class="tab active">
+    <div class="card">
       <h2>Chuỗi điểm danh</h2>
-      <button id="btnCheckin" class="btn primary" disabled>Điểm danh</button>
+      <button id="btnCheckin" class="btn primary">Điểm danh</button>
       <button id="btnInvite" class="btn ghost">➕ Mời bạn</button>
-      <p id="streakStatus">Bạn chưa điểm danh ngày nào</p>
+      <p id="streakStatus">Chuỗi hiện tại: 0 ngày</p>
+    </div>
 
-      <h3>Bạn bè</h3>
+    <div class="card">
+      <h2>Bạn bè</h2>
       <ul id="friendsList"></ul>
+    </div>
 
-      <h3>Thông báo</h3>
+    <div class="card">
+      <h2>Thông báo</h2>
       <ul id="notifications"></ul>
-    </div>
-
-    <!-- Tab Khám phá -->
-    <div id="tab-explore" class="tab">
-      <h2>Đề xuất bạn bè</h2>
-      <ul id="recommendList"></ul>
-    </div>
-
-    <!-- Tab Bảng xếp hạng -->
-    <div id="tab-leaderboard" class="tab">
-      <h2>Top Streak</h2>
-      <ol id="leaderboardList"></ol>
-    </div>
-
-    <!-- Tab Tôi -->
-    <div id="tab-me" class="tab">
-      <h2>Thông tin cá nhân</h2>
-      <p><strong>Tên:</strong> <span id="displayName"></span></p>
-      <p><strong>Giới tính:</strong> <span id="displayGender"></span></p>
-      <button id="btnLogout" class="btn ghost">Đăng xuất</button>
     </div>
   </div>
 
