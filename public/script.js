@@ -1,67 +1,111 @@
-// script.js
-
 document.addEventListener("DOMContentLoaded", () => {
+  // Các phần tử chính
   const loginBox = document.getElementById("loginBox");
   const registerBox = document.getElementById("registerBox");
   const appArea = document.getElementById("appArea");
+  const authCard = document.getElementById("authCard");
 
+  // Nút
   const btnLogin = document.getElementById("btnLogin");
   const btnRegister = document.getElementById("btnRegister");
+  const btnLogout = document.getElementById("btnLogout");
   const showRegister = document.getElementById("showRegister");
   const showLogin = document.getElementById("showLogin");
-  const btnLogout = document.getElementById("btnLogout");
 
-  // Hiện form đăng ký
+  // Input
+  const loginName = document.getElementById("loginName");
+  const loginPass = document.getElementById("loginPass");
+  const regName = document.getElementById("regName");
+  const regPass = document.getElementById("regPass");
+  const regGender = document.getElementById("regGender");
+  const regAvatar = document.getElementById("regAvatar");
+  const avatarPreview = document.getElementById("avatarPreview");
+
+  // Chỗ hiển thị trong app
+  const meName = document.getElementById("meName");
+  const meGender = document.getElementById("meGender");
+  const meAvatar = document.getElementById("meAvatar");
+  const regMsg = document.getElementById("regMsg");
+
+  // Biến tạm để lưu user
+  let currentUser = null;
+
+  // 👉 Chuyển qua form đăng ký
   showRegister.addEventListener("click", () => {
     loginBox.style.display = "none";
     registerBox.style.display = "block";
   });
 
-  // Quay lại đăng nhập
+  // 👉 Quay lại form login
   showLogin.addEventListener("click", () => {
     registerBox.style.display = "none";
     loginBox.style.display = "block";
   });
 
-  // Đăng ký
-  btnRegister.addEventListener("click", () => {
-    const name = document.getElementById("regName").value;
-    const pass = document.getElementById("regPass").value;
-    const gender = document.getElementById("regGender").value;
+  // 👉 Xem trước avatar khi chọn ảnh
+  regAvatar.addEventListener("change", () => {
+    const file = regAvatar.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        avatarPreview.innerHTML = `<img src="${e.target.result}" class="avatarBig" />`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-    if (!name || !pass) {
-      document.getElementById("regMsg").innerText = "⚠️ Vui lòng nhập đủ thông tin";
+  // 👉 Đăng ký
+  btnRegister.addEventListener("click", () => {
+    if (!regName.value || !regPass.value) {
+      regMsg.innerText = "⚠️ Vui lòng nhập đầy đủ thông tin!";
+      regMsg.style.color = "red";
       return;
     }
 
-    // Lưu tạm vào localStorage
-    localStorage.setItem("user", JSON.stringify({ name, pass, gender }));
+    // Tạo user mới
+    currentUser = {
+      name: regName.value,
+      pass: regPass.value,
+      gender: regGender.value,
+      avatar: regAvatar.files[0] ? URL.createObjectURL(regAvatar.files[0]) : null
+    };
 
-    alert("✅ Đăng ký thành công, hãy đăng nhập!");
-    registerBox.style.display = "none";
-    loginBox.style.display = "block";
+    regMsg.innerText = "✅ Đăng ký thành công!";
+    regMsg.style.color = "green";
+
+    // Tự động chuyển về login
+    setTimeout(() => {
+      registerBox.style.display = "none";
+      loginBox.style.display = "block";
+    }, 1000);
   });
 
-  // Đăng nhập
+  // 👉 Đăng nhập
   btnLogin.addEventListener("click", () => {
-    const name = document.getElementById("loginName").value;
-    const pass = document.getElementById("loginPass").value;
-
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-    if (name === user.name && pass === user.pass) {
-      loginBox.style.display = "none";
+    if (!currentUser) {
+      alert("⚠️ Chưa có tài khoản, hãy đăng ký trước!");
+      return;
+    }
+    if (loginName.value === currentUser.name && loginPass.value === currentUser.pass) {
+      // Hiển thị app
+      authCard.style.display = "none";
       appArea.style.display = "block";
-      document.getElementById("meName").innerText = user.name;
-      document.getElementById("meGender").innerText = user.gender === "male" ? "Nam" : "Nữ";
+
+      meName.innerText = currentUser.name;
+      meGender.innerText = currentUser.gender === "male" ? "Nam" : "Nữ";
+      meAvatar.innerHTML = currentUser.avatar
+        ? `<img src="${currentUser.avatar}" class="avatarBig" />`
+        : "🙂";
     } else {
-      alert("❌ Sai tên đăng nhập hoặc mật khẩu");
+      alert("❌ Sai tên hoặc mật khẩu!");
     }
   });
 
-  // Đăng xuất
+  // 👉 Đăng xuất
   btnLogout.addEventListener("click", () => {
     appArea.style.display = "none";
-    loginBox.style.display = "block";
+    authCard.style.display = "block";
+    loginName.value = "";
+    loginPass.value = "";
   });
 });
