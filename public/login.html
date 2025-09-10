@@ -1,37 +1,23 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Streaky - Đăng nhập</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Đăng nhập - Streaky</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="auth-container">
+<body class="center">
+  <div class="card login-card">
     <h1>🔥 Streaky</h1>
-
-    <div id="loginBox">
-      <h2>Đăng nhập</h2>
-      <input id="loginName" type="text" placeholder="Tên người dùng" />
-      <input id="loginPass" type="password" placeholder="Mật khẩu" />
-      <button id="btnLogin" class="primary">Đăng nhập</button>
-      <p class="small">Chưa có tài khoản? <a href="#" id="showRegister">Đăng ký</a></p>
-    </div>
-
-    <div id="registerBox" style="display:none">
-      <h2>Đăng ký</h2>
-      <input id="regName" type="text" placeholder="Tên hiển thị" />
-      <input id="regPass" type="password" placeholder="Mật khẩu" />
-      <select id="regGender">
-        <option value="male">Nam</option>
-        <option value="female">Nữ</option>
-      </select>
-      <button id="btnRegister" class="primary">Đăng ký</button>
-      <p class="small">Đã có tài khoản? <a href="#" id="showLogin">Đăng nhập</a></p>
-    </div>
+    <input type="text" id="username" placeholder="Nhập tên của bạn">
+    <select id="gender">
+      <option value="Nam">Nam</option>
+      <option value="Nữ">Nữ</option>
+      <option value="Khác">Khác</option>
+    </select>
+    <button id="btnLogin" class="btn primary">Đăng nhập</button>
   </div>
 
-  <script src="utils.js"></script>
   <script src="login.js"></script>
 </body>
 </html>
