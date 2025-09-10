@@ -2,82 +2,39 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🔥 Streaky — Đăng nhập</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Đăng nhập - Streaky</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="auth-container">
-    <div class="auth-card">
-      <h1>🔥 Streaky</h1>
-      <div class="tabs">
-        <button id="btnShowLogin" class="active">Đăng nhập</button>
-        <button id="btnShowRegister">Đăng ký</button>
-      </div>
+  <div class="wrap">
+    <h1>🔥 Streaky</h1>
 
-      <!-- Form đăng nhập -->
-      <form id="loginForm">
-        <input type="text" id="loginName" placeholder="Tên của bạn" required />
-        <button type="submit" class="btn primary">Vào</button>
-      </form>
-
-      <!-- Form đăng ký -->
-      <form id="registerForm" class="hidden">
-        <input type="text" id="regName" placeholder="Tên của bạn" required />
-        <select id="regGender">
-          <option value="Nam">Nam</option>
-          <option value="Nữ">Nữ</option>
-        </select>
-        <button type="submit" class="btn primary">Tạo tài khoản</button>
-      </form>
+    <div class="card">
+      <h2>Đăng nhập</h2>
+      <input type="text" id="username" placeholder="Tên người dùng">
+      <select id="gender">
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+      </select>
+      <button id="btnLogin" class="btn primary">Đăng nhập</button>
     </div>
   </div>
 
   <script>
-    const btnShowLogin = document.getElementById("btnShowLogin");
-    const btnShowRegister = document.getElementById("btnShowRegister");
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
+    document.getElementById("btnLogin").addEventListener("click", () => {
+      const name = document.getElementById("username").value.trim();
+      const gender = document.getElementById("gender").value;
 
-    btnShowLogin.addEventListener("click", () => {
-      btnShowLogin.classList.add("active");
-      btnShowRegister.classList.remove("active");
-      loginForm.classList.remove("hidden");
-      registerForm.classList.add("hidden");
-    });
-
-    btnShowRegister.addEventListener("click", () => {
-      btnShowRegister.classList.add("active");
-      btnShowLogin.classList.remove("active");
-      registerForm.classList.remove("hidden");
-      loginForm.classList.add("hidden");
-    });
-
-    loginForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const name = document.getElementById("loginName").value.trim();
-      let allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-      const user = allUsers.find(u => u.name === name);
-      if (!user) {
-        alert("Tài khoản không tồn tại. Vui lòng đăng ký!");
+      if (!name) {
+        alert("Vui lòng nhập tên!");
         return;
       }
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      window.location.href = "index.html";
-    });
 
-    registerForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const name = document.getElementById("regName").value.trim();
-      const gender = document.getElementById("regGender").value;
-      let allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-      if (allUsers.find(u => u.name === name)) {
-        alert("Tên đã tồn tại. Vui lòng chọn tên khác!");
-        return;
-      }
-      const user = { name, gender, streak: 0, friends: [], notifications: [], hasPartner: false };
-      allUsers.push(user);
-      localStorage.setItem("allUsers", JSON.stringify(allUsers));
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      // lưu thông tin user
+      localStorage.setItem("user", JSON.stringify({ name, gender }));
+
+      // chuyển sang web chính
       window.location.href = "index.html";
     });
   </script>
