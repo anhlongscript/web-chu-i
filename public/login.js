@@ -1,25 +1,12 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const btnLogin = document.getElementById("btnLogin");
+document.getElementById("btnLogin").addEventListener("click", () => {
+  const username = document.getElementById("username").value.trim();
+  const gender = document.getElementById("gender").value;
 
-  btnLogin.addEventListener("click", () => {
-    const name = document.getElementById("name").value.trim();
-    const gender = document.getElementById("gender").value;
+  if (!username) {
+    alert("Vui lòng nhập tên!");
+    return;
+  }
 
-    if (!name) {
-      alert("Nhập tên trước đã!");
-      return;
-    }
-
-    const user = {
-      name,
-      gender,
-      streak: 0,
-      hasPartner: false,
-      notifications: [],
-      friends: ["An", "Bình", "Chi", "Dũng", "Hà"],
-    };
-
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    window.location.href = "index.html"; // sau login chuyển sang web chính
-  });
+  localStorage.setItem("user", JSON.stringify({ username, gender, streak: 0 }));
+  window.location.href = "index.html";
 });
