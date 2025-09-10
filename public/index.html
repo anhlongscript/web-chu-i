@@ -8,50 +8,47 @@
 </head>
 <body>
   <div class="wrap">
-    <h1 class="title">🔥 Streaky — Web chính</h1>
+    <h1 class="title">🔥 Streaky</h1>
 
-    <!-- Thông tin user -->
-    <div id="userInfo" class="card">
-      <h2>Thông tin người dùng</h2>
-      <p><strong>Tên:</strong> <span id="displayName"></span></p>
-      <p><strong>Giới tính:</strong> <span id="displayGender"></span></p>
-      <button id="btnLogout" class="btn ghost">Đăng xuất</button>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button data-tab="chain" class="active">Chuỗi</button>
+      <button data-tab="discover">Khám phá</button>
+      <button data-tab="ranking">Bảng xếp hạng</button>
+      <button data-tab="me">Tôi</button>
     </div>
 
-    <hr />
-
-    <!-- Chuỗi điểm danh -->
-    <div class="card">
+    <!-- Tab: Chuỗi -->
+    <div class="tab-content" id="tab-chain">
       <h2>Chuỗi điểm danh</h2>
-      <button id="btnCheckin" class="btn primary" disabled>Điểm danh</button>
-      <button id="btnInvite" class="btn ghost">➕ Mời bạn</button>
+      <button id="btnCheckin" class="btn primary">Điểm danh</button>
       <p id="streakStatus">Bạn chưa điểm danh ngày nào</p>
     </div>
 
-    <hr />
+    <!-- Tab: Khám phá -->
+    <div class="tab-content hidden" id="tab-discover">
+      <h2>Đề xuất kết bạn</h2>
+      <ul id="discoverList"></ul>
+    </div>
 
-    <!-- Danh sách bạn bè -->
-    <div class="card">
-      <h2>Bạn bè</h2>
+    <!-- Tab: Bảng xếp hạng -->
+    <div class="tab-content hidden" id="tab-ranking">
+      <h2>Top Streak</h2>
+      <ul id="rankingList"></ul>
+    </div>
+
+    <!-- Tab: Tôi -->
+    <div class="tab-content hidden" id="tab-me">
+      <h2>Thông tin cá nhân</h2>
+      <p><strong>Tên:</strong> <span id="displayName"></span></p>
+      <p><strong>Giới tính:</strong> <span id="displayGender"></span></p>
+      <button id="btnLogout" class="btn ghost">Đăng xuất</button>
+
+      <h3>Bạn bè</h3>
       <ul id="friendsList"></ul>
-    </div>
 
-    <hr />
-
-    <!-- Thông báo -->
-    <div class="card">
-      <h2>Thông báo</h2>
+      <h3>Thông báo</h3>
       <ul id="notifications"></ul>
-    </div>
-
-    <hr />
-
-    <!-- 🏆 Top giữ chuỗi dài nhất -->
-    <div class="card">
-      <h2>🏆 Top giữ chuỗi dài nhất</h2>
-      <ol id="leaderboard">
-        <li>Chưa có dữ liệu</li>
-      </ol>
     </div>
   </div>
 
