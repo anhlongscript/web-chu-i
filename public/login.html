@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Đăng nhập - Streaky</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap center">
     <h1>🔥 Streaky</h1>
-
     <div class="card">
       <h2>Đăng nhập</h2>
-      <input type="text" id="username" placeholder="Tên người dùng">
+      <input id="name" type="text" placeholder="Tên của bạn" />
       <select id="gender">
         <option value="Nam">Nam</option>
         <option value="Nữ">Nữ</option>
@@ -20,23 +19,6 @@
       <button id="btnLogin" class="btn primary">Đăng nhập</button>
     </div>
   </div>
-
-  <script>
-    document.getElementById("btnLogin").addEventListener("click", () => {
-      const name = document.getElementById("username").value.trim();
-      const gender = document.getElementById("gender").value;
-
-      if (!name) {
-        alert("Vui lòng nhập tên!");
-        return;
-      }
-
-      // lưu thông tin user
-      localStorage.setItem("user", JSON.stringify({ name, gender }));
-
-      // chuyển sang web chính
-      window.location.href = "index.html";
-    });
-  </script>
+  <script src="login.js"></script>
 </body>
 </html>
