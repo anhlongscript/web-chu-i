@@ -1,50 +1,41 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Streaky</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>🔥 Streaky</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
+  <header class="navbar">
     <h1>🔥 Streaky</h1>
-    <button id="logoutBtn" class="ghost">Đăng xuất</button>
+    <nav>
+      <button>Chuỗi</button>
+      <button>Khám phá</button>
+      <button>Bảng xếp hạng</button>
+      <button id="btnLogout">Tôi</button>
+    </nav>
   </header>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="streak">Chuỗi</button>
-    <button class="tab" data-tab="explore">Khám phá</button>
-    <button class="tab" data-tab="leader">Xếp hạng</button>
-    <button class="tab" data-tab="me">Tôi</button>
-  </div>
-
-  <main>
-    <section id="streak" class="tab-content">
+  <main class="wrap">
+    <div class="card">
       <h2>Chuỗi điểm danh</h2>
-      <button id="checkinBtn" class="primary">Điểm danh</button>
-      <button id="inviteBtn" class="ghost">➕ Mời bạn</button>
-      <p id="streakInfo"></p>
+      <button id="btnCheckin" class="btn primary">Điểm danh</button>
+      <button id="btnInvite" class="btn ghost">➕ Mời bạn</button>
+      <p id="streakStatus">Chuỗi hiện tại: 0 ngày</p>
+    </div>
+
+    <div class="card">
+      <h2>Bạn bè</h2>
       <ul id="friendsList"></ul>
-    </section>
+    </div>
 
-    <section id="explore" class="tab-content" style="display:none">
-      <h2>Khám phá</h2>
-      <div id="suggestions"></div>
-    </section>
-
-    <section id="leader" class="tab-content" style="display:none">
-      <h2>Bảng xếp hạng</h2>
-      <div id="leaderboard"></div>
-    </section>
-
-    <section id="me" class="tab-content" style="display:none">
-      <h2>Thông tin cá nhân</h2>
-      <div id="profile"></div>
-    </section>
+    <div class="card">
+      <h2>Thông báo</h2>
+      <ul id="notifications"></ul>
+    </div>
   </main>
 
-  <script src="utils.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
