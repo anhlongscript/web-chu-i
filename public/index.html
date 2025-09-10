@@ -1,7 +1,16 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🔥 Streaky — Web chính</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
   <div class="wrap">
     <h1 class="title">🔥 Streaky — Web chính</h1>
 
+    <!-- Thông tin user -->
     <div id="userInfo" class="card">
       <h2>Thông tin người dùng</h2>
       <p><strong>Tên:</strong> <span id="displayName"></span></p>
@@ -11,12 +20,31 @@
 
     <hr />
 
+    <!-- Chuỗi điểm danh -->
     <div class="card">
       <h2>Chuỗi điểm danh</h2>
-      <button id="btnCheckin" class="btn primary">Điểm danh</button>
+      <button id="btnCheckin" class="btn primary" disabled>Điểm danh</button>
+      <button id="btnInvite" class="btn ghost">➕ Mời bạn</button>
       <p id="streakStatus">Bạn chưa điểm danh ngày nào</p>
+    </div>
+
+    <hr />
+
+    <!-- Danh sách bạn bè -->
+    <div class="card">
+      <h2>Bạn bè</h2>
+      <ul id="friendsList"></ul>
+    </div>
+
+    <hr />
+
+    <!-- Thông báo -->
+    <div class="card">
+      <h2>Thông báo</h2>
+      <ul id="notifications"></ul>
     </div>
   </div>
 
   <script src="main.js"></script>
 </body>
+</html>
