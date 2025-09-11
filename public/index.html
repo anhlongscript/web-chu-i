@@ -2,102 +2,33 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Web Chat</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; }
-    #messages { list-style: none; padding: 0; max-height: 400px; overflow-y: auto; }
-    #messages li { display: flex; align-items: center; margin: 5px 0; }
-    .avatar { width: 35px; height: 35px; border-radius: 50%; margin-right: 10px; }
-    .bubble { padding: 6px 10px; border-radius: 8px; max-width: 70%; }
-    .me .bubble { background: #d1ffd1; margin-left: auto; }
-    .other .bubble { background: #f2f2f2; margin-right: auto; }
-    .system { font-style: italic; color: gray; text-align: center; width: 100%; }
-    #online { margin-top: 10px; padding: 5px; background: #eee; border-radius: 5px; font-size: 14px; }
-    input, select { padding: 8px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button { padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-  </style>
+  <title>Beta Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h2>💬 Web Chat</h2>
-
-  <!-- Đăng nhập -->
+  <!-- Form login -->
   <div id="login">
+    <h2>Đăng nhập</h2>
     <input id="nickname" placeholder="Nhập nickname..." /><br>
-    <label>Chọn avatar: </label>
-    <select id="avatar">
-      <option value="https://i.pravatar.cc/150?img=1">Avatar 1</option>
-      <option value="https://i.pravatar.cc/150?img=2">Avatar 2</option>
-      <option value="https://i.pravatar.cc/150?img=3">Avatar 3</option>
-      <option value="https://i.pravatar.cc/150?img=4">Avatar 4</option>
-    </select><br>
+    <label>Avatar: </label>
+    <input type="file" id="avatarFile" accept="image/*"><br>
     <button onclick="joinChat()">Vào chat</button>
   </div>
 
-  <!-- Chat -->
+  <!-- Chat UI -->
   <div id="chat" style="display:none;">
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
-      <button>Gửi</button>
-    </form>
-    <div id="online">👥 Người online: 0</div>
+    <div id="sidebar">
+      <h3>👥 Online (<span id="count">0</span>)</h3>
+      <ul id="userList"></ul>
+    </div>
+    <div id="main">
+      <div id="messages"></div>
+      <input id="msgInput" placeholder="Nhập tin nhắn..." />
+      <button onclick="sendMessage()">Gửi</button>
+    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    let nickname = "";
-    let avatar = "";
-
-    function joinChat() {
-      nickname = document.getElementById("nickname").value.trim();
-      avatar = document.getElementById("avatar").value;
-      if (!nickname) return alert("Bạn cần nhập nickname!");
-      document.getElementById("login").style.display = "none";
-      document.getElementById("chat").style.display = "block";
-      socket.emit("join", { nickname, avatar });
-    }
-
-    const form = document.getElementById("form");
-    const input = document.getElementById("input");
-    const messages = document.getElementById("messages");
-    const onlineBox = document.getElementById("online");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (input.value) {
-        socket.emit("chat message", { user: nickname, avatar, text: input.value });
-        input.value = "";
-      }
-    });
-
-    socket.on("chat message", (msg) => {
-      const li = document.createElement("li");
-      li.className = msg.user === nickname ? "me" : "other";
-
-      if (msg.system) {
-        li.className = "system";
-        li.textContent = msg.text;
-      } else {
-        const img = document.createElement("img");
-        img.src = msg.avatar;
-        img.className = "avatar";
-
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-        bubble.textContent = `[${msg.user}] ${msg.text}`;
-
-        li.appendChild(img);
-        li.appendChild(bubble);
-      }
-      messages.appendChild(li);
-      messages.scrollTop = messages.scrollHeight;
-    });
-
-    socket.on("onlineUsers", (users) => {
-      const names = users.map(u => u.nickname).join(", ");
-      onlineBox.textContent = `👥 Người online: ${users.length} (${names})`;
-    });
-  </script>
+  <script src="client.js"></script>
 </body>
 </html>
