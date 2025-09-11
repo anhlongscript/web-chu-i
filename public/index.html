@@ -4,24 +4,45 @@
   <meta charset="UTF-8" />
   <title>Web Chat</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #messages { list-style: none; padding: 0; }
-    #messages li { padding: 5px; background: #f2f2f2; margin: 5px 0; border-radius: 5px; }
-    input { padding: 10px; width: 80%; }
-    button { padding: 10px; }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; }
+    #messages { list-style: none; padding: 0; max-height: 400px; overflow-y: auto; }
+    #messages li { padding: 6px; margin: 5px 0; border-radius: 8px; }
+    .me { background: #d1ffd1; text-align: right; }
+    .other { background: #f2f2f2; text-align: left; }
+    .system { font-style: italic; color: gray; text-align: center; }
+    input { padding: 10px; width: 70%; border-radius: 5px; border: 1px solid #ccc; }
+    button { padding: 10px; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <h2>💬 Chat với bạn</h2>
-  <ul id="messages"></ul>
-  <form id="form" action="">
-    <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
-    <button>Gửi</button>
-  </form>
+  <h2>💬 Web Chat</h2>
+
+  <div id="login">
+    <input id="nickname" placeholder="Nhập nickname..." />
+    <button onclick="joinChat()">Vào chat</button>
+  </div>
+
+  <div id="chat" style="display:none;">
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
+      <button>Gửi</button>
+    </form>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+    let nickname = "";
+
+    function joinChat() {
+      nickname = document.getElementById("nickname").value.trim();
+      if (!nickname) return alert("Bạn cần nhập nickname!");
+      document.getElementById("login").style.display = "none";
+      document.getElementById("chat").style.display = "block";
+      socket.emit("join", nickname);
+    }
+
     const form = document.getElementById("form");
     const input = document.getElementById("input");
     const messages = document.getElementById("messages");
@@ -29,16 +50,24 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       if (input.value) {
-        socket.emit("chat message", input.value);
+        socket.emit("chat message", { user: nickname, text: input.value });
         input.value = "";
       }
     });
 
     socket.on("chat message", (msg) => {
       const li = document.createElement("li");
+      li.className = msg.user === nickname ? "me" : "other";
+      li.textContent = `[${msg.user}] ${msg.text}`;
+      messages.appendChild(li);
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    socket.on("system", (msg) => {
+      const li = document.createElement("li");
+      li.className = "system";
       li.textContent = msg;
       messages.appendChild(li);
-      window.scrollTo(0, document.body.scrollHeight);
     });
   </script>
 </body>
