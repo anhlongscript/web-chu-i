@@ -1,55 +1,53 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
+// index.js
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, "public")));
+let users = {}; // lưu user đang online
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// serve static
+app.use(express.static(path.join(__dirname, 'public')));
+
+// routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
 });
 
-let users = {}; // socket.id -> { username, avatar }
+// socket.io
+io.on('connection', socket => {
+  console.log('🔗 user connected');
 
-io.on("connection", (socket) => {
-  console.log("✅ user connected", socket.id);
-
-  socket.on("join", ({ username, avatar }) => {
+  socket.on('join', ({ username, avatar }) => {
     users[socket.id] = { username, avatar };
-    io.emit("userList", Object.values(users));
-    socket.broadcast.emit("message", {
-      username: "Hệ thống",
-      text: `${username} đã tham gia phòng.`,
-      avatar: ""
-    });
+    io.emit('userList', Object.values(users));
   });
 
-  socket.on("chatMessage", (msg) => {
-    const user = users[socket.id];
-    if (!user) return;
-    io.emit("message", { username: user.username, text: msg, avatar: user.avatar });
-  });
-
-  socket.on("disconnect", () => {
-    const user = users[socket.id];
-    if (user) {
-      socket.broadcast.emit("message", {
-        username: "Hệ thống",
-        text: `${user.username} đã rời phòng.`,
-        avatar: ""
+  socket.on('chatMessage', msg => {
+    if (users[socket.id]) {
+      io.emit('message', {
+        username: users[socket.id].username,
+        avatar: users[socket.id].avatar,
+        text: msg
       });
-      delete users[socket.id];
-      io.emit("userList", Object.values(users));
     }
+  });
+
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    io.emit('userList', Object.values(users));
+    console.log('❌ user disconnected');
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
