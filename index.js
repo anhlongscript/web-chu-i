@@ -1,50 +1,59 @@
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const { Server } = require('socket.io');
-const multer = require('multer');
+const express = require("express");
+const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
 const PORT = process.env.PORT || 3000;
 
-// Cấu hình upload avatar
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
-const upload = multer({ storage });
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// API upload
-app.post('/upload', upload.single('avatar'), (req, res) => {
-  res.json({ filePath: `/uploads/${req.file.filename}` });
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-// Danh sách user
-let users = [];
+app.get("/chat", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "chat.html"));
+});
 
-io.on('connection', (socket) => {
-  socket.on('register', (user) => {
-    socket.user = user;
-    users.push(user);
-    io.emit('userList', users);
+let users = {}; // socket.id -> { username, avatar }
+
+io.on("connection", (socket) => {
+  console.log("✅ user connected", socket.id);
+
+  socket.on("join", ({ username, avatar }) => {
+    users[socket.id] = { username, avatar };
+    io.emit("userList", Object.values(users));
+    socket.broadcast.emit("message", {
+      username: "Hệ thống",
+      text: `${username} đã tham gia phòng.`,
+      avatar: ""
+    });
   });
 
-  socket.on('chatMessage', (msg) => {
-    if (socket.user) {
-      io.emit('chatMessage', { user: socket.user, msg });
+  socket.on("chatMessage", (msg) => {
+    const user = users[socket.id];
+    if (!user) return;
+    io.emit("message", { username: user.username, text: msg, avatar: user.avatar });
+  });
+
+  socket.on("disconnect", () => {
+    const user = users[socket.id];
+    if (user) {
+      socket.broadcast.emit("message", {
+        username: "Hệ thống",
+        text: `${user.username} đã rời phòng.`,
+        avatar: ""
+      });
+      delete users[socket.id];
+      io.emit("userList", Object.values(users));
     }
-  });
-
-  socket.on('disconnect', () => {
-    users = users.filter(u => u !== socket.user);
-    io.emit('userList', users);
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
