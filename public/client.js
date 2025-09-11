@@ -10,11 +10,23 @@ const onlineCount = document.getElementById("onlineCount");
 const userList = document.getElementById("userList");
 const logoutBtn = document.getElementById("logoutBtn");
 const soundBtn = document.getElementById("soundBtn");
+const ytPlayer = document.getElementById("ytplayer");
 
 let currentUser = null;
-let ytPlayer = document.getElementById("ytplayer");
+let isMuted = true;
 
-// đăng nhập
+// Auto login nếu có localStorage
+window.onload = () => {
+  const savedUser = localStorage.getItem("chatUser");
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    socket.emit("register", currentUser);
+    loginScreen.classList.add("hidden");
+    chatScreen.classList.remove("hidden");
+  }
+};
+
+// Đăng nhập
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const username = document.getElementById("username").value.trim();
@@ -30,13 +42,14 @@ loginForm.addEventListener("submit", async (e) => {
   }
 
   currentUser = { username, avatar: avatarUrl };
-  socket.emit("register", currentUser);
+  localStorage.setItem("chatUser", JSON.stringify(currentUser));
 
+  socket.emit("register", currentUser);
   loginScreen.classList.add("hidden");
   chatScreen.classList.remove("hidden");
 });
 
-// chat
+// Chat
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
   if (messageInput.value) {
@@ -45,7 +58,7 @@ chatForm.addEventListener("submit", (e) => {
   }
 });
 
-// nhận tin nhắn
+// Nhận tin nhắn
 socket.on("chatMessage", ({ user, msg }) => {
   const div = document.createElement("div");
   div.innerHTML = `<img src="${user.avatar || '/uploads/default.png'}" width="30" style="border-radius:50%"> 
@@ -54,7 +67,7 @@ socket.on("chatMessage", ({ user, msg }) => {
   messages.scrollTop = messages.scrollHeight;
 });
 
-// danh sách người dùng
+// Danh sách online
 socket.on("userList", (list) => {
   onlineCount.textContent = `${list.length} người online`;
   userList.innerHTML = list.map(u => 
@@ -62,22 +75,21 @@ socket.on("userList", (list) => {
   ).join("");
 });
 
-// đăng xuất
+// Đăng xuất
 logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("chatUser");
   window.location.reload();
 });
 
-// bật/tắt tiếng video
-let isMuted = true;
+// Bật/tắt tiếng
 soundBtn.addEventListener("click", () => {
-  const src = ytPlayer.src;
+  let src = ytPlayer.src;
   if (isMuted) {
     ytPlayer.src = src.replace("mute=1", "mute=0");
-    isMuted = false;
     soundBtn.textContent = "🔈";
   } else {
     ytPlayer.src = src.replace("mute=0", "mute=1");
-    isMuted = true;
     soundBtn.textContent = "🔊";
   }
+  isMuted = !isMuted;
 });
