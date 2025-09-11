@@ -9,40 +9,37 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-// Serve thư mục public
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// Danh sách user
-let users = {};
+let users = {}; // socket.id -> { name }
 
 io.on("connection", (socket) => {
-  console.log("🔌 Người dùng kết nối:", socket.id);
+  console.log("✅ Người dùng mới kết nối");
 
-  socket.on("login", ({ name, avatar }) => {
-    users[socket.id] = { name, avatar };
-    io.emit("userList", Object.values(users));
+  socket.on("login", ({ name }) => {
+    users[socket.id] = { name };
+    io.emit("updateUsers", Object.values(users));
   });
 
   socket.on("chatMessage", (msg) => {
-    if (users[socket.id]) {
-      io.emit("chatMessage", {
-        user: users[socket.id],
-        text: msg,
-      });
+    const user = users[socket.id];
+    if (user) {
+      io.emit("chatMessage", { name: user.name, msg });
     }
+  });
+
+  socket.on("logout", () => {
+    delete users[socket.id];
+    io.emit("updateUsers", Object.values(users));
+    socket.disconnect();
   });
 
   socket.on("disconnect", () => {
     delete users[socket.id];
-    io.emit("userList", Object.values(users));
-    console.log("❌ Người dùng thoát:", socket.id);
+    io.emit("updateUsers", Object.values(users));
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ Streaky đang chạy ở cổng ${PORT}`);
+  console.log(`🚀 Server chạy tại cổng ${PORT}`);
 });
