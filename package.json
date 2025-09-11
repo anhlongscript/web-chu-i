@@ -1,12 +1,16 @@
 {
   "name": "streaky-",
   "version": "1.0.0",
+  "description": "Simple chat app with Express and Socket.IO",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.5"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }
