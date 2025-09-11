@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Beta Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App Beta</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Form Auth -->
   <div id="auth">
-    <div id="registerBox">
+    <!-- Form Đăng ký -->
+    <form id="registerForm" enctype="multipart/form-data">
       <h2>Đăng ký</h2>
-      <input id="regNick" placeholder="Nhập nickname..." /><br>
-      <input id="regPass" type="password" placeholder="Mật khẩu..." /><br>
-      <label>Avatar: </label>
-      <input type="file" id="regAvatar" accept="image/*"><br>
-      <button onclick="register()">Đăng ký</button>
-    </div>
+      <input type="text" name="username" placeholder="Nhập nickname..." required />
+      <input type="password" name="password" placeholder="Mật khẩu..." required />
+      <label>Avatar:</label>
+      <input type="file" name="avatar" accept="image/*" />
+      <button type="submit">Đăng ký</button>
+      <p>Bạn đã có tài khoản?
+        <a href="#" id="showLogin">Đăng nhập</a>
+      </p>
+    </form>
 
-    <div id="loginBox" style="display:none;">
+    <!-- Form Đăng nhập -->
+    <form id="loginForm" style="display:none;">
       <h2>Đăng nhập</h2>
-      <input id="loginNick" placeholder="Nhập nickname..." /><br>
-      <input id="loginPass" type="password" placeholder="Mật khẩu..." /><br>
-      <button onclick="login()">Đăng nhập</button>
-      <p><a href="#" onclick="switchToRegister()">Chưa có tài khoản? Đăng ký</a></p>
-    </div>
+      <input type="text" id="loginUsername" placeholder="Nhập nickname..." required />
+      <input type="password" id="loginPassword" placeholder="Mật khẩu..." required />
+      <button type="submit">Đăng nhập</button>
+      <p>Chưa có tài khoản?
+        <a href="#" id="showRegister">Đăng ký</a>
+      </p>
+    </form>
   </div>
 
-  <!-- Chat UI -->
+  <!-- Chat -->
   <div id="chat" style="display:none;">
     <div id="sidebar">
-      <h3>👥 Online (<span id="count">0</span>)</h3>
+      <h3>Người online</h3>
       <ul id="userList"></ul>
     </div>
     <div id="main">
       <div id="messages"></div>
-      <div class="inputBox">
-        <input id="msgInput" placeholder="Nhập tin nhắn..." />
-        <button onclick="sendMessage()">Gửi</button>
+      <div>
+        <input id="msgInput" type="text" placeholder="Nhập tin nhắn...">
+        <button id="sendBtn">Gửi</button>
       </div>
     </div>
   </div>
