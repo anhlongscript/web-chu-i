@@ -9,58 +9,43 @@ const server = http.createServer(app);
 const io = new Server(server);
 const PORT = process.env.PORT || 3000;
 
-// Bộ nhớ giả (RAM)
-let usersDB = {}; // { username: { password, avatarUrl } }
+// lưu avatar khi upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, path.join(__dirname, "public", "uploads")),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+const upload = multer({ storage });
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
-// Multer upload avatar
-const upload = multer({ dest: "public/uploads/" });
+// tạm lưu người dùng
+let users = {};
 
-// API đăng ký
-app.post("/register", upload.single("avatar"), (req, res) => {
-  const { username, password } = req.body;
-
-  if (usersDB[username]) {
-    return res.status(400).json({ message: "Tên đã tồn tại" });
-  }
-
-  let avatarUrl = "/default.png";
-  if (req.file) {
-    avatarUrl = "/uploads/" + req.file.filename;
-  }
-
-  usersDB[username] = { password, avatarUrl };
-  console.log("✅ Đăng ký:", username);
-
-  res.json({ success: true });
+// API upload avatar
+app.post("/upload", upload.single("avatar"), (req, res) => {
+  res.json({ filePath: "/uploads/" + req.file.filename });
 });
 
-// API đăng nhập
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  if (!usersDB[username] || usersDB[username].password !== password) {
-    return res.status(400).json({ message: "Sai tài khoản hoặc mật khẩu" });
-  }
-
-  res.json({ success: true, avatarUrl: usersDB[username].avatarUrl });
-});
-
-// Chat socket.io
 io.on("connection", (socket) => {
-  console.log("🔗 User connected:", socket.id);
+  console.log("🔵 User connected", socket.id);
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+  socket.on("register", (user) => {
+    users[socket.id] = user;
+    io.emit("userList", Object.values(users));
+  });
+
+  socket.on("chatMessage", (msg) => {
+    const user = users[socket.id];
+    if (user) {
+      io.emit("chatMessage", { user, msg });
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected:", socket.id);
+    delete users[socket.id];
+    io.emit("userList", Object.values(users));
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`✅ Server chạy ở cổng ${PORT}`);
-});
+server.listen(PORT, () => console.log(`✅ Server chạy ở cổng ${PORT}`));
