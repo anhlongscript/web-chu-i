@@ -1,85 +1,96 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f3f4f6;
   margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
+  font-family: Arial, sans-serif;
+  color: #fff;
 }
 
-#chat-container {
-  width: 100%;
-  max-width: 600px;
-  height: 100vh;
+#video-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+#video-bg iframe {
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+.screen {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  backdrop-filter: blur(8px);
+}
+
+.hidden {
+  display: none;
+}
+
+#chatScreen {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#userList {
+  margin: 10px 0;
+  padding: 5px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 5px;
 }
 
 #messages {
-  flex: 1;
-  padding: 10px;
+  height: 300px;
   overflow-y: auto;
-}
-
-.message {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 6px 10px;
-  background: #f9fafb;
-  border-radius: 8px;
-}
-
-.message .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-right: 10px;
-  object-fit: cover;
-}
-
-#form {
-  display: flex;
+  background: rgba(0,0,0,0.4);
+  border-radius: 5px;
   padding: 10px;
-  background: #f3f4f6;
 }
 
-#input {
+#messages div {
+  margin-bottom: 10px;
+}
+
+#chatForm {
+  display: flex;
+}
+
+#messageInput {
   flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
 }
 
-#form button {
-  margin-left: 10px;
-  padding: 8px 12px;
+button {
+  padding: 10px;
   border: none;
-  border-radius: 6px;
-  background: #2563eb;
+  background: #00aaff;
   color: white;
+  border-radius: 5px;
+  margin-left: 5px;
   cursor: pointer;
 }
 
-#form button:hover {
-  background: #1d4ed8;
+button:hover {
+  background: #0088cc;
 }
 
-#online-users {
-  border-top: 1px solid #ddd;
-  padding: 10px;
-  background: #f9fafb;
-}
-
-#online-users h3 {
-  margin: 0 0 5px;
-}
-
-#users-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+@media (max-width: 600px) {
+  #messages {
+    height: 200px;
+  }
 }
