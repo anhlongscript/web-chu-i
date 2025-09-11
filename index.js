@@ -1,51 +1,50 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
-const multer = require("multer");
+const express = require('express');
+const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
+const multer = require('multer');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const PORT = process.env.PORT || 3000;
 
-// lưu avatar khi upload
+// Cấu hình upload avatar
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, "public", "uploads")),
+  destination: (req, file, cb) => cb(null, 'public/uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
 const upload = multer({ storage });
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// tạm lưu người dùng
-let users = {};
-
-// API upload avatar
-app.post("/upload", upload.single("avatar"), (req, res) => {
-  res.json({ filePath: "/uploads/" + req.file.filename });
+// API upload
+app.post('/upload', upload.single('avatar'), (req, res) => {
+  res.json({ filePath: `/uploads/${req.file.filename}` });
 });
 
-io.on("connection", (socket) => {
-  console.log("🔵 User connected", socket.id);
+// Danh sách user
+let users = [];
 
-  socket.on("register", (user) => {
-    users[socket.id] = user;
-    io.emit("userList", Object.values(users));
+io.on('connection', (socket) => {
+  socket.on('register', (user) => {
+    socket.user = user;
+    users.push(user);
+    io.emit('userList', users);
   });
 
-  socket.on("chatMessage", (msg) => {
-    const user = users[socket.id];
-    if (user) {
-      io.emit("chatMessage", { user, msg });
+  socket.on('chatMessage', (msg) => {
+    if (socket.user) {
+      io.emit('chatMessage', { user: socket.user, msg });
     }
   });
 
-  socket.on("disconnect", () => {
-    delete users[socket.id];
-    io.emit("userList", Object.values(users));
+  socket.on('disconnect', () => {
+    users = users.filter(u => u !== socket.user);
+    io.emit('userList', users);
   });
 });
 
-server.listen(PORT, () => console.log(`✅ Server chạy ở cổng ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
