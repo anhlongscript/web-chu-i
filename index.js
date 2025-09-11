@@ -1,53 +1,48 @@
-// index.js
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const path = require('path');
+const express = require("express");
+const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
 const PORT = process.env.PORT || 3000;
 
-let users = {}; // lưu user đang online
+// Serve thư mục public
+app.use(express.static(path.join(__dirname, "public")));
 
-// serve static
-app.use(express.static(path.join(__dirname, 'public')));
-
-// routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-app.get('/chat', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// socket.io
-io.on('connection', socket => {
-  console.log('🔗 user connected');
+// Danh sách user
+let users = {};
 
-  socket.on('join', ({ username, avatar }) => {
-    users[socket.id] = { username, avatar };
-    io.emit('userList', Object.values(users));
+io.on("connection", (socket) => {
+  console.log("🔌 Người dùng kết nối:", socket.id);
+
+  socket.on("login", ({ name, avatar }) => {
+    users[socket.id] = { name, avatar };
+    io.emit("userList", Object.values(users));
   });
 
-  socket.on('chatMessage', msg => {
+  socket.on("chatMessage", (msg) => {
     if (users[socket.id]) {
-      io.emit('message', {
-        username: users[socket.id].username,
-        avatar: users[socket.id].avatar,
-        text: msg
+      io.emit("chatMessage", {
+        user: users[socket.id],
+        text: msg,
       });
     }
   });
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     delete users[socket.id];
-    io.emit('userList', Object.values(users));
-    console.log('❌ user disconnected');
+    io.emit("userList", Object.values(users));
+    console.log("❌ Người dùng thoát:", socket.id);
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Streaky đang chạy ở cổng ${PORT}`);
 });
