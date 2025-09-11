@@ -1,94 +1,61 @@
 const socket = io();
 
-const loginBox = document.getElementById("login-box");
-const chatContainer = document.getElementById("chat-container");
-const loginForm = document.getElementById("loginForm");
+const loginScreen = document.getElementById("login-screen");
+const chatScreen = document.getElementById("chat-screen");
+const usernameInput = document.getElementById("username");
+const avatarInput = document.getElementById("avatar");
+const joinBtn = document.getElementById("join-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const usersList = document.getElementById("users");
+const messages = document.getElementById("messages");
+const chatForm = document.getElementById("chat-form");
+const msgInput = document.getElementById("msg");
 
-loginForm.addEventListener("submit", function (e) {
+let currentUser = null;
+
+joinBtn.addEventListener("click", () => {
+  const name = usernameInput.value.trim();
+  const avatar = avatarInput.files[0]
+    ? URL.createObjectURL(avatarInput.files[0])
+    : "https://via.placeholder.com/50";
+
+  if (!name) {
+    alert("Hãy nhập tên!");
+    return;
+  }
+
+  currentUser = { name, avatar };
+  socket.emit("login", currentUser);
+
+  loginScreen.classList.add("hidden");
+  chatScreen.classList.remove("hidden");
+});
+
+logoutBtn.addEventListener("click", () => {
+  window.location.reload();
+});
+
+chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const username = document.getElementById("username").value;
-  const avatarFile = document.getElementById("avatar").files[0];
-
-  if (!username) return alert("Nhập tên vào!");
-
-  if (avatarFile) {
-    const reader = new FileReader();
-    reader.onload = function () {
-      localStorage.setItem("username", username);
-      localStorage.setItem("avatar", reader.result);
-      startChat(username, reader.result);
-    };
-    reader.readAsDataURL(avatarFile);
-  } else {
-    localStorage.setItem("username", username);
-    localStorage.setItem("avatar", "");
-    startChat(username, "");
+  if (msgInput.value) {
+    socket.emit("chatMessage", msgInput.value);
+    msgInput.value = "";
   }
 });
 
-function startChat(username, avatar) {
-  loginBox.classList.add("hidden");
-  chatContainer.classList.remove("hidden");
-  socket.emit("join", { username, avatar });
-}
-
-// Tự login nếu nhớ tài khoản
-window.onload = () => {
-  const username = localStorage.getItem("username");
-  const avatar = localStorage.getItem("avatar");
-  if (username) {
-    loginBox.classList.add("hidden");
-    chatContainer.classList.remove("hidden");
-    socket.emit("join", { username, avatar });
-  }
-};
-
-// Nhận tin nhắn
-socket.on("message", (msg) => {
-  const messages = document.getElementById("messages");
-  const div = document.createElement("div");
-  div.classList.add("message");
-
-  const avatarImg = msg.avatar
-    ? `<img src="${msg.avatar}" alt="avatar">`
-    : `<img src="https://via.placeholder.com/32" alt="avatar">`;
-
-  div.innerHTML = `${avatarImg}<div><strong>${msg.username}:</strong> ${msg.text}</div>`;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-});
-
-// Danh sách user
-socket.on("userList", (list) => {
-  const users = document.getElementById("users");
-  users.innerHTML = "";
-  list.forEach((user) => {
+socket.on("userList", (users) => {
+  usersList.innerHTML = "";
+  users.forEach((u) => {
     const li = document.createElement("li");
-    li.innerHTML = `<img src="${user.avatar || "https://via.placeholder.com/24"}"> ${user.username}`;
-    users.appendChild(li);
+    li.innerHTML = `<img src="${u.avatar}"/> ${u.name}`;
+    usersList.appendChild(li);
   });
 });
 
-// Gửi tin nhắn
-document.getElementById("chat-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const msg = document.getElementById("msg").value;
-  socket.emit("chatMessage", msg);
-  document.getElementById("msg").value = "";
-});
-
-// Đăng xuất
-document.getElementById("logout").addEventListener("click", () => {
-  localStorage.clear();
-  location.reload();
-});
-
-// Bật/Tắt nhạc
-document.getElementById("toggleMusic").addEventListener("click", () => {
-  const iframe = document.getElementById("bg-video");
-  if (iframe.src.includes("mute=1")) {
-    iframe.src = iframe.src.replace("mute=1", "mute=0");
-  } else {
-    iframe.src = iframe.src.replace("mute=0", "mute=1");
-  }
+socket.on("chatMessage", (data) => {
+  const div = document.createElement("div");
+  div.classList.add("message");
+  div.innerHTML = `<img src="${data.user.avatar}"/> <b>${data.user.name}:</b> ${data.text}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 });
