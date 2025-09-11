@@ -1,95 +1,94 @@
 const socket = io();
 
-const loginScreen = document.getElementById("loginScreen");
-const chatScreen = document.getElementById("chatScreen");
+const loginBox = document.getElementById("login-box");
+const chatContainer = document.getElementById("chat-container");
 const loginForm = document.getElementById("loginForm");
-const chatForm = document.getElementById("chatForm");
-const messages = document.getElementById("messages");
-const messageInput = document.getElementById("messageInput");
-const onlineCount = document.getElementById("onlineCount");
-const userList = document.getElementById("userList");
-const logoutBtn = document.getElementById("logoutBtn");
-const soundBtn = document.getElementById("soundBtn");
-const ytPlayer = document.getElementById("ytplayer");
 
-let currentUser = null;
-let isMuted = true;
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const avatarFile = document.getElementById("avatar").files[0];
 
-// Auto login nếu có localStorage
+  if (!username) return alert("Nhập tên vào!");
+
+  if (avatarFile) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      localStorage.setItem("username", username);
+      localStorage.setItem("avatar", reader.result);
+      startChat(username, reader.result);
+    };
+    reader.readAsDataURL(avatarFile);
+  } else {
+    localStorage.setItem("username", username);
+    localStorage.setItem("avatar", "");
+    startChat(username, "");
+  }
+});
+
+function startChat(username, avatar) {
+  loginBox.classList.add("hidden");
+  chatContainer.classList.remove("hidden");
+  socket.emit("join", { username, avatar });
+}
+
+// Tự login nếu nhớ tài khoản
 window.onload = () => {
-  const savedUser = localStorage.getItem("chatUser");
-  if (savedUser) {
-    currentUser = JSON.parse(savedUser);
-    socket.emit("register", currentUser);
-    loginScreen.classList.add("hidden");
-    chatScreen.classList.remove("hidden");
+  const username = localStorage.getItem("username");
+  const avatar = localStorage.getItem("avatar");
+  if (username) {
+    loginBox.classList.add("hidden");
+    chatContainer.classList.remove("hidden");
+    socket.emit("join", { username, avatar });
   }
 };
 
-// Đăng nhập
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const username = document.getElementById("username").value.trim();
-  const avatarFile = document.getElementById("avatar").files[0];
-  let avatarUrl = "";
-
-  if (avatarFile) {
-    const formData = new FormData();
-    formData.append("avatar", avatarFile);
-    const res = await fetch("/upload", { method: "POST", body: formData });
-    const data = await res.json();
-    avatarUrl = data.filePath;
-  }
-
-  currentUser = { username, avatar: avatarUrl };
-  localStorage.setItem("chatUser", JSON.stringify(currentUser));
-
-  socket.emit("register", currentUser);
-  loginScreen.classList.add("hidden");
-  chatScreen.classList.remove("hidden");
-});
-
-// Chat
-chatForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (messageInput.value) {
-    socket.emit("chatMessage", messageInput.value);
-    messageInput.value = "";
-  }
-});
-
 // Nhận tin nhắn
-socket.on("chatMessage", ({ user, msg }) => {
+socket.on("message", (msg) => {
+  const messages = document.getElementById("messages");
   const div = document.createElement("div");
-  div.innerHTML = `<img src="${user.avatar || '/uploads/default.png'}" width="30" style="border-radius:50%"> 
-                   <b>${user.username}</b>: ${msg}`;
+  div.classList.add("message");
+
+  const avatarImg = msg.avatar
+    ? `<img src="${msg.avatar}" alt="avatar">`
+    : `<img src="https://via.placeholder.com/32" alt="avatar">`;
+
+  div.innerHTML = `${avatarImg}<div><strong>${msg.username}:</strong> ${msg.text}</div>`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 });
 
-// Danh sách online
+// Danh sách user
 socket.on("userList", (list) => {
-  onlineCount.textContent = `${list.length} người online`;
-  userList.innerHTML = list.map(u => 
-    `<div><img src="${u.avatar || '/uploads/default.png'}" width="20" style="border-radius:50%"> ${u.username}</div>`
-  ).join("");
+  const users = document.getElementById("users");
+  users.innerHTML = "";
+  list.forEach((user) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<img src="${user.avatar || "https://via.placeholder.com/24"}"> ${user.username}`;
+    users.appendChild(li);
+  });
+});
+
+// Gửi tin nhắn
+document.getElementById("chat-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("msg").value;
+  socket.emit("chatMessage", msg);
+  document.getElementById("msg").value = "";
 });
 
 // Đăng xuất
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("chatUser");
-  window.location.reload();
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.clear();
+  location.reload();
 });
 
-// Bật/tắt tiếng
-soundBtn.addEventListener("click", () => {
-  let src = ytPlayer.src;
-  if (isMuted) {
-    ytPlayer.src = src.replace("mute=1", "mute=0");
-    soundBtn.textContent = "🔈";
+// Bật/Tắt nhạc
+document.getElementById("toggleMusic").addEventListener("click", () => {
+  const iframe = document.getElementById("bg-video");
+  if (iframe.src.includes("mute=1")) {
+    iframe.src = iframe.src.replace("mute=1", "mute=0");
   } else {
-    ytPlayer.src = src.replace("mute=0", "mute=1");
-    soundBtn.textContent = "🔊";
+    iframe.src = iframe.src.replace("mute=0", "mute=1");
   }
-  isMuted = !isMuted;
 });
