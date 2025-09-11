@@ -6,13 +6,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Form login -->
-  <div id="login">
-    <h2>Đăng nhập</h2>
-    <input id="nickname" placeholder="Nhập nickname..." /><br>
-    <label>Avatar: </label>
-    <input type="file" id="avatarFile" accept="image/*"><br>
-    <button onclick="joinChat()">Vào chat</button>
+  <!-- Form Auth -->
+  <div id="auth">
+    <div id="registerBox">
+      <h2>Đăng ký</h2>
+      <input id="regNick" placeholder="Nhập nickname..." /><br>
+      <input id="regPass" type="password" placeholder="Mật khẩu..." /><br>
+      <label>Avatar: </label>
+      <input type="file" id="regAvatar" accept="image/*"><br>
+      <button onclick="register()">Đăng ký</button>
+    </div>
+
+    <div id="loginBox" style="display:none;">
+      <h2>Đăng nhập</h2>
+      <input id="loginNick" placeholder="Nhập nickname..." /><br>
+      <input id="loginPass" type="password" placeholder="Mật khẩu..." /><br>
+      <button onclick="login()">Đăng nhập</button>
+      <p><a href="#" onclick="switchToRegister()">Chưa có tài khoản? Đăng ký</a></p>
+    </div>
   </div>
 
   <!-- Chat UI -->
@@ -23,8 +34,10 @@
     </div>
     <div id="main">
       <div id="messages"></div>
-      <input id="msgInput" placeholder="Nhập tin nhắn..." />
-      <button onclick="sendMessage()">Gửi</button>
+      <div class="inputBox">
+        <input id="msgInput" placeholder="Nhập tin nhắn..." />
+        <button onclick="sendMessage()">Gửi</button>
+      </div>
     </div>
   </div>
 
