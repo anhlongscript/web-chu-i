@@ -1,50 +1,23 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat App Beta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Streaky Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="auth">
-    <!-- Form Đăng ký -->
-    <form id="registerForm" enctype="multipart/form-data">
-      <h2>Đăng ký</h2>
-      <input type="text" name="username" placeholder="Nhập nickname..." required />
-      <input type="password" name="password" placeholder="Mật khẩu..." required />
-      <label>Avatar:</label>
-      <input type="file" name="avatar" accept="image/*" />
-      <button type="submit">Đăng ký</button>
-      <p>Bạn đã có tài khoản?
-        <a href="#" id="showLogin">Đăng nhập</a>
-      </p>
+  <div id="chat-container">
+    <div id="messages"></div>
+
+    <form id="form" action="">
+      <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
+      <button>Gửi</button>
     </form>
 
-    <!-- Form Đăng nhập -->
-    <form id="loginForm" style="display:none;">
-      <h2>Đăng nhập</h2>
-      <input type="text" id="loginUsername" placeholder="Nhập nickname..." required />
-      <input type="password" id="loginPassword" placeholder="Mật khẩu..." required />
-      <button type="submit">Đăng nhập</button>
-      <p>Chưa có tài khoản?
-        <a href="#" id="showRegister">Đăng ký</a>
-      </p>
-    </form>
-  </div>
-
-  <!-- Chat -->
-  <div id="chat" style="display:none;">
-    <div id="sidebar">
+    <div id="online-users">
       <h3>Người online</h3>
-      <ul id="userList"></ul>
-    </div>
-    <div id="main">
-      <div id="messages"></div>
-      <div>
-        <input id="msgInput" type="text" placeholder="Nhập tin nhắn...">
-        <button id="sendBtn">Gửi</button>
-      </div>
+      <ul id="users-list"></ul>
     </div>
   </div>
 
