@@ -1,100 +1,59 @@
-/* Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body, html { width: 100%; height: 100%; font-family: Arial, sans-serif; }
-
-/* Video nền */
-.background-video {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -1;
-  pointer-events: none;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
-/* Form login */
-.login-container {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255,255,255,0.9);
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  z-index: 10;
-  width: 300px;
-}
-.login-container input, 
-.login-container button {
-  width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-.login-container button {
-  background: #007bff;
-  color: white;
-  cursor: pointer;
-  border: none;
-}
-
-/* Khung chat */
-.chat-container {
-  display: none; /* Ẩn ban đầu */
-  height: 100%;
+.page {
   display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-/* Sidebar */
-.sidebar {
+.hidden {
+  display: none;
+}
+
+#chatPage {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+}
+
+#sidebar {
   width: 200px;
-  background: #f4f4f4;
-  border-right: 1px solid #ddd;
+  background: #f1f1f1;
   padding: 10px;
-}
-.sidebar h3 { margin-bottom: 10px; }
-.sidebar ul { list-style: none; }
-.sidebar button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 8px;
-  border: none;
-  background: red;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
-/* Chat box */
-.chat-box {
+#chatArea {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(255,255,255,0.8);
 }
+
 #messages {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
-}
-#messageForm {
-  display: flex;
-  border-top: 1px solid #ddd;
-}
-#messageInput {
-  flex: 1;
-  padding: 10px;
-  border: none;
-}
-#messageForm button {
-  padding: 10px 15px;
-  background: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+  border-bottom: 1px solid #ccc;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .sidebar { width: 120px; }
-  .login-container { width: 90%; }
+#inputArea {
+  display: flex;
+  padding: 10px;
+}
+
+#messageInput {
+  flex: 1;
+  padding: 8px;
+}
+
+button {
+  margin-left: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
 }
