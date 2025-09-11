@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Streaky Chat</title>
+  <title>Đăng nhập</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Nền video -->
-  <iframe id="bg-video"
-    src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&loop=1&playlist=GrG2-oX5z24"
-    frameborder="0"
-    allow="autoplay; fullscreen">
-  </iframe>
+  <!-- Video nền -->
+  <div id="background-video">
+    <iframe width="100%" height="100%" 
+      src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&loop=1&playlist=GrG2-oX5z24"
+      frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
+  </div>
   <div class="overlay"></div>
 
   <!-- Form login -->
-  <div id="login-box">
+  <div id="login-page">
     <h2>Đăng nhập</h2>
     <form id="loginForm">
       <input type="text" id="username" placeholder="Tên của bạn" required>
@@ -25,24 +26,28 @@
     </form>
   </div>
 
-  <!-- Giao diện chat -->
-  <div id="chat-container" class="hidden">
-    <div id="sidebar">
-      <h3>Người online</h3>
-      <ul id="users"></ul>
-      <button id="logout">Đăng xuất</button>
-      <button id="toggleMusic">🎵 Bật/Tắt nhạc</button>
-    </div>
-    <div id="main">
-      <div id="messages"></div>
-      <form id="chat-form">
-        <input id="msg" type="text" placeholder="Nhập tin nhắn..." required>
-        <button type="submit">Gửi</button>
-      </form>
-    </div>
-  </div>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const avatarFile = document.getElementById("avatar").files[0];
+      let avatar = "";
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="client.js"></script>
+      if (avatarFile) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          avatar = reader.result;
+          localStorage.setItem("username", username);
+          localStorage.setItem("avatar", avatar);
+          window.location.href = "/chat";
+        };
+        reader.readAsDataURL(avatarFile);
+      } else {
+        localStorage.setItem("username", username);
+        localStorage.setItem("avatar", "");
+        window.location.href = "/chat";
+      }
+    });
+  </script>
 </body>
 </html>
