@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Streaky Chat</title>
+  <title>Chat App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
       frameborder="0" allowfullscreen></iframe>
   </div>
 
-  <!-- Khung đăng nhập -->
+  <!-- Đăng nhập -->
   <div id="loginScreen" class="screen">
     <h2>Đăng nhập</h2>
     <form id="loginForm">
@@ -24,17 +24,17 @@
     </form>
   </div>
 
-  <!-- Khung chat -->
+  <!-- Chat -->
   <div id="chatScreen" class="screen hidden">
     <div class="top-bar">
       <span id="onlineCount">0 người online</span>
-      <button id="logoutBtn">Đăng xuất</button>
       <button id="soundBtn">🔊</button>
+      <button id="logoutBtn">Đăng xuất</button>
     </div>
 
     <div id="userList"></div>
-
     <div id="messages"></div>
+
     <form id="chatForm">
       <input id="messageInput" autocomplete="off" placeholder="Nhắn tin..."/>
       <button>Gửi</button>
@@ -42,6 +42,6 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script src="client.js"></script>
 </body>
 </html>
