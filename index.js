@@ -1,135 +1,52 @@
-const express = require('express');
-const path = require('path');
-const http = require('http');
+// index.js
+const express = require("express");
+const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
+
 const app = express();
 const server = http.createServer(app);
-const { Server } = require('socket.io');
 const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static folder
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-let users = [];
+// Danh sách user online
+let users = {};
 
-io.on('connection', (socket) => {
-  console.log('🔗 Kết nối mới');
+io.on("connection", (socket) => {
+  console.log("🔌 New connection:", socket.id);
 
   socket.on("join", ({ nickname, avatar }) => {
-    socket.nickname = nickname;
-    socket.avatar = avatar;
-    users.push({ id: socket.id, nickname, avatar });
-    io.emit("chat message", { system: true, text: `✨ ${nickname} đã tham gia chat` });
-    io.emit("onlineUsers", users);
+    users[socket.id] = { nickname, avatar };
+    io.emit("updateUsers", users);
+    console.log(`${nickname} đã tham gia`);
   });
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-  });
-
-  socket.on('disconnect', () => {
-    if (socket.nickname) {
-      users = users.filter(u => u.id !== socket.id);
-      io.emit("chat message", { system: true, text: `👋 ${socket.nickname} đã rời khỏi chat` });
-      io.emit("onlineUsers", users);
+  socket.on("chatMessage", (msg) => {
+    const user = users[socket.id];
+    if (user) {
+      io.emit("chatMessage", {
+        nickname: user.nickname,
+        avatar: user.avatar,
+        text: msg,
+      });
     }
+  });
+
+  socket.on("disconnect", () => {
+    delete users[socket.id];
+    io.emit("updateUsers", users);
+    console.log("❌ User disconnected:", socket.id);
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ WebChat chạy ở cổng ${PORT}`);
-});
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const app = express();
-const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server);
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-let users = [];
-
-io.on('connection', (socket) => {
-  console.log('🔗 Kết nối mới');
-
-  socket.on("join", ({ nickname, avatar }) => {
-    socket.nickname = nickname;
-    socket.avatar = avatar;
-    users.push({ id: socket.id, nickname, avatar });
-    io.emit("chat message", { system: true, text: `✨ ${nickname} đã tham gia chat` });
-    io.emit("onlineUsers", users);
-  });
-
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-  });
-
-  socket.on('disconnect', () => {
-    if (socket.nickname) {
-      users = users.filter(u => u.id !== socket.id);
-      io.emit("chat message", { system: true, text: `👋 ${socket.nickname} đã rời khỏi chat` });
-      io.emit("onlineUsers", users);
-    }
-  });
-});
-
-server.listen(PORT, () => {
-  console.log(`✅ WebChat chạy ở cổng ${PORT}`);
-});
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const app = express();
-const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server);
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-let users = [];
-
-io.on('connection', (socket) => {
-  console.log('🔗 Kết nối mới');
-
-  socket.on("join", ({ nickname, avatar }) => {
-    socket.nickname = nickname;
-    socket.avatar = avatar;
-    users.push({ id: socket.id, nickname, avatar });
-    io.emit("chat message", { system: true, text: `✨ ${nickname} đã tham gia chat` });
-    io.emit("onlineUsers", users);
-  });
-
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-  });
-
-  socket.on('disconnect', () => {
-    if (socket.nickname) {
-      users = users.filter(u => u.id !== socket.id);
-      io.emit("chat message", { system: true, text: `👋 ${socket.nickname} đã rời khỏi chat` });
-      io.emit("onlineUsers", users);
-    }
-  });
-});
-
-server.listen(PORT, () => {
-  console.log(`✅ WebChat chạy ở cổng ${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
