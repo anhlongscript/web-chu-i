@@ -1,138 +1,100 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body, html {
-  height: 100%;
-  overflow: hidden;
-}
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body, html { width: 100%; height: 100%; font-family: Arial, sans-serif; }
 
 /* Video nền */
-.video-background {
+.background-video {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   z-index: -1;
-  overflow: hidden;
-}
-
-.video-background iframe {
-  width: 100%;
-  height: 100%;
+  pointer-events: none;
 }
 
 /* Form login */
-.center-box {
+.login-container {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255,255,255,0.9);
   padding: 20px;
   border-radius: 12px;
   text-align: center;
+  z-index: 10;
+  width: 300px;
 }
-
-.center-box input, .center-box button {
+.login-container input, 
+.login-container button {
+  width: 100%;
   margin: 8px 0;
   padding: 10px;
-  width: 100%;
-  border-radius: 8px;
   border: 1px solid #ccc;
+  border-radius: 8px;
 }
-
-.center-box button {
+.login-container button {
   background: #007bff;
   color: white;
-  font-weight: bold;
   cursor: pointer;
   border: none;
 }
 
-.center-box button:hover {
-  background: #0056b3;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Chat */
-#chat-screen {
-  display: flex;
+/* Khung chat */
+.chat-container {
+  display: none; /* Ẩn ban đầu */
   height: 100%;
-  width: 100%;
-  position: relative;
-}
-
-#sidebar {
-  width: 200px;
-  background: rgba(240, 240, 240, 0.95);
-  padding: 15px;
-  overflow-y: auto;
-}
-
-#users {
-  list-style: none;
-}
-
-#users li {
-  margin: 8px 0;
   display: flex;
-  align-items: center;
 }
 
-#users img {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  margin-right: 8px;
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background: #f4f4f4;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+.sidebar h3 { margin-bottom: 10px; }
+.sidebar ul { list-style: none; }
+.sidebar button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: red;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-#chat-area {
+/* Chat box */
+.chat-box {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: rgba(255,255,255,0.8);
 }
-
 #messages {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
 }
-
-.message {
-  margin-bottom: 10px;
-}
-
-.message img {
-  width: 25px; height: 25px;
-  border-radius: 50%;
-  vertical-align: middle;
-  margin-right: 5px;
-}
-
-#chat-form {
+#messageForm {
   display: flex;
-  background: #fff;
-  padding: 10px;
+  border-top: 1px solid #ddd;
 }
-
-#chat-form input {
+#messageInput {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: none;
 }
-
-#chat-form button {
-  margin-left: 10px;
+#messageForm button {
   padding: 10px 15px;
   background: #007bff;
-  border: none;
   color: white;
-  border-radius: 8px;
+  border: none;
   cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .sidebar { width: 120px; }
+  .login-container { width: 90%; }
 }
