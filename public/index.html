@@ -1,53 +1,47 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streaky Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Video nền -->
-  <div id="background-video">
-    <iframe width="100%" height="100%" 
-      src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&loop=1&playlist=GrG2-oX5z24"
-      frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+  <div class="video-background">
+    <iframe src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&loop=1&playlist=GrG2-oX5z24"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
     </iframe>
   </div>
-  <div class="overlay"></div>
 
   <!-- Form login -->
-  <div id="login-page">
+  <div id="login-screen" class="center-box">
     <h2>Đăng nhập</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Tên của bạn" required>
-      <input type="file" id="avatar" accept="image/*">
-      <button type="submit">Vào phòng</button>
-    </form>
+    <input type="text" id="username" placeholder="Tên của bạn" />
+    <input type="file" id="avatar" accept="image/*" />
+    <button id="join-btn">Vào phòng</button>
   </div>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const username = document.getElementById("username").value;
-      const avatarFile = document.getElementById("avatar").files[0];
-      let avatar = "";
+  <!-- Màn hình chat -->
+  <div id="chat-screen" class="hidden">
+    <aside id="sidebar">
+      <h3>Người online</h3>
+      <ul id="users"></ul>
+      <button id="logout-btn">Đăng xuất</button>
+    </aside>
 
-      if (avatarFile) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          avatar = reader.result;
-          localStorage.setItem("username", username);
-          localStorage.setItem("avatar", avatar);
-          window.location.href = "/chat";
-        };
-        reader.readAsDataURL(avatarFile);
-      } else {
-        localStorage.setItem("username", username);
-        localStorage.setItem("avatar", "");
-        window.location.href = "/chat";
-      }
-    });
-  </script>
+    <main id="chat-area">
+      <div id="messages"></div>
+      <form id="chat-form">
+        <input id="msg" type="text" placeholder="Nhập tin nhắn..." autocomplete="off" />
+        <button>Gửi</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
 </body>
 </html>
