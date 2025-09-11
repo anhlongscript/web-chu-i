@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Streaky Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="chat-container">
-    <div id="messages"></div>
+  <!-- Video nền -->
+  <div id="video-bg">
+    <iframe id="ytplayer" type="text/html"
+      src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&controls=0&loop=1&playlist=GrG2-oX5z24"
+      frameborder="0" allowfullscreen></iframe>
+  </div>
 
-    <form id="form" action="">
-      <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
+  <!-- Khung đăng nhập -->
+  <div id="loginScreen" class="screen">
+    <h2>Đăng nhập</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Tên của bạn" required><br>
+      <input type="file" id="avatar" accept="image/*"><br>
+      <button type="submit">Vào phòng</button>
+    </form>
+  </div>
+
+  <!-- Khung chat -->
+  <div id="chatScreen" class="screen hidden">
+    <div class="top-bar">
+      <span id="onlineCount">0 người online</span>
+      <button id="logoutBtn">Đăng xuất</button>
+      <button id="soundBtn">🔊</button>
+    </div>
+
+    <div id="userList"></div>
+
+    <div id="messages"></div>
+    <form id="chatForm">
+      <input id="messageInput" autocomplete="off" placeholder="Nhắn tin..."/>
       <button>Gửi</button>
     </form>
-
-    <div id="online-users">
-      <h3>Người online</h3>
-      <ul id="users-list"></ul>
-    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="client.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
