@@ -1,23 +1,45 @@
-const express = require("express");
-const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #messages { list-style: none; padding: 0; }
+    #messages li { padding: 5px; background: #f2f2f2; margin: 5px 0; border-radius: 5px; }
+    input { padding: 10px; width: 80%; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <h2>💬 Chat với bạn</h2>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off" placeholder="Nhập tin nhắn..." />
+    <button>Gửi</button>
+  </form>
 
-app.use(express.static("public"));
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById("form");
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
 
-io.on("connection", (socket) => {
-  console.log("Người dùng mới kết nối");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit("chat message", input.value);
+        input.value = "";
+      }
+    });
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Người dùng đã thoát");
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
-  console.log(`Server chạy tại cổng ${PORT}`);
-});
+    socket.on("chat message", (msg) => {
+      const li = document.createElement("li");
+      li.textContent = msg;
+      messages.appendChild(li);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+</html>
