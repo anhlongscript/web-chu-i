@@ -3,42 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat App</title>
+  <title>Streaky Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Video nền -->
-  <div id="video-bg">
-    <iframe id="ytplayer" type="text/html"
-      src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&controls=0&loop=1&playlist=GrG2-oX5z24"
-      frameborder="0" allowfullscreen></iframe>
-  </div>
+  <!-- Nền video -->
+  <iframe id="bg-video"
+    src="https://www.youtube.com/embed/GrG2-oX5z24?autoplay=1&mute=1&loop=1&playlist=GrG2-oX5z24"
+    frameborder="0"
+    allow="autoplay; fullscreen">
+  </iframe>
+  <div class="overlay"></div>
 
-  <!-- Đăng nhập -->
-  <div id="loginScreen" class="screen">
+  <!-- Form login -->
+  <div id="login-box">
     <h2>Đăng nhập</h2>
     <form id="loginForm">
-      <input type="text" id="username" placeholder="Tên của bạn" required><br>
-      <input type="file" id="avatar" accept="image/*"><br>
+      <input type="text" id="username" placeholder="Tên của bạn" required>
+      <input type="file" id="avatar" accept="image/*">
       <button type="submit">Vào phòng</button>
     </form>
   </div>
 
-  <!-- Chat -->
-  <div id="chatScreen" class="screen hidden">
-    <div class="top-bar">
-      <span id="onlineCount">0 người online</span>
-      <button id="soundBtn">🔊</button>
-      <button id="logoutBtn">Đăng xuất</button>
+  <!-- Giao diện chat -->
+  <div id="chat-container" class="hidden">
+    <div id="sidebar">
+      <h3>Người online</h3>
+      <ul id="users"></ul>
+      <button id="logout">Đăng xuất</button>
+      <button id="toggleMusic">🎵 Bật/Tắt nhạc</button>
     </div>
-
-    <div id="userList"></div>
-    <div id="messages"></div>
-
-    <form id="chatForm">
-      <input id="messageInput" autocomplete="off" placeholder="Nhắn tin..."/>
-      <button>Gửi</button>
-    </form>
+    <div id="main">
+      <div id="messages"></div>
+      <form id="chat-form">
+        <input id="msg" type="text" placeholder="Nhập tin nhắn..." required>
+        <button type="submit">Gửi</button>
+      </form>
+    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
