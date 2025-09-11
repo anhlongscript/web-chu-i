@@ -1,49 +1,71 @@
 const socket = io();
 
-// Khi login
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+const loginPage = document.getElementById("loginPage");
+const chatPage = document.getElementById("chatPage");
+const usernameInput = document.getElementById("username");
+const rememberMe = document.getElementById("rememberMe");
+const loginBtn = document.getElementById("loginBtn");
 
-  const username = document.getElementById('username').value.trim();
-  if (!username) return;
+const logoutBtn = document.getElementById("logoutBtn");
+const usersList = document.getElementById("users");
 
-  // Ẩn login, hiện chat
-  document.querySelector('.login-container').style.display = 'none';
-  document.querySelector('.chat-container').style.display = 'flex';
+const messages = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
-  // Gửi user lên server
-  socket.emit('join', { username });
-});
+// Giữ đăng nhập nếu có
+window.onload = () => {
+  const savedName = localStorage.getItem("chatUsername");
+  if (savedName) {
+    usernameInput.value = savedName;
+    login(savedName);
+  }
+};
 
-// Gửi tin nhắn
-document.getElementById('messageForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const msg = document.getElementById('messageInput').value.trim();
-  if (!msg) return;
-  socket.emit('chatMessage', msg);
-  document.getElementById('messageInput').value = '';
-});
+function login(name) {
+  socket.emit("login", { name });
+  loginPage.classList.add("hidden");
+  chatPage.classList.remove("hidden");
+  if (rememberMe.checked) {
+    localStorage.setItem("chatUsername", name);
+  }
+}
 
-// Nhận tin nhắn
-socket.on('chatMessage', (data) => {
-  const div = document.createElement('div');
-  div.textContent = `${data.username}: ${data.message}`;
-  document.getElementById('messages').appendChild(div);
-});
+loginBtn.onclick = () => {
+  const name = usernameInput.value.trim();
+  if (name) login(name);
+};
+
+logoutBtn.onclick = () => {
+  socket.emit("logout");
+  localStorage.removeItem("chatUsername");
+  chatPage.classList.add("hidden");
+  loginPage.classList.remove("hidden");
+};
 
 // Cập nhật danh sách user
-socket.on('userList', (users) => {
-  const ul = document.getElementById('users');
-  ul.innerHTML = '';
-  users.forEach(u => {
-    const li = document.createElement('li');
-    li.textContent = u;
-    ul.appendChild(li);
+socket.on("updateUsers", (users) => {
+  usersList.innerHTML = "";
+  users.forEach((u) => {
+    const li = document.createElement("li");
+    li.textContent = u.name;
+    usersList.appendChild(li);
   });
 });
 
-// Đăng xuất
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  socket.emit('logout');
-  location.reload();
+// Nhận tin nhắn
+socket.on("chatMessage", ({ name, msg }) => {
+  const div = document.createElement("div");
+  div.textContent = `${name}: ${msg}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 });
+
+// Gửi tin nhắn
+sendBtn.onclick = () => {
+  const msg = messageInput.value.trim();
+  if (msg) {
+    socket.emit("chatMessage", msg);
+    messageInput.value = "";
+  }
+};
